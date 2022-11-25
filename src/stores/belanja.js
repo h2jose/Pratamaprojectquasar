@@ -5,18 +5,29 @@ export const useCounterStore = defineStore('counter', {
     counter: 0,
     dataFirebase:[],
     dataPromo:[],
-    keranjang:[]
+    keranjang:[],
+    dataLogin:[]
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
     getdataFirebase:(state)=> state.dataFirebase.reverse(),
     getdataPromo:(state)=> state.dataPromo.reverse(),
     getkeranjang:(state)=> state.keranjang.reverse(),
+    getdatalogin:(state)=> state.dataLogin,
   },
   actions: {
     increment() {
       this.counter++;
     },
+
+    tambahdatalogin(p){
+      this.dataLogin = p
+      console.log("ada data")
+      console.log(this.dataLogin.email)
+
+      // localStorage.setItem("login",JSON.stringify(p))
+    },
+   
     getalldataFirebase(doc){
       // console.log("tolol")
       // console.log(doc)
@@ -32,6 +43,10 @@ export const useCounterStore = defineStore('counter', {
       console.log("Darto dqw")
       console.log(p)
       // localstorage.setItem
+    },
+    logoutlogin(){
+      this.dataLogin = ""
+      console.log(this.dataLogin)
     }
   },
 });
