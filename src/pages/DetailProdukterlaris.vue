@@ -40,7 +40,7 @@ let data  = {
 		totalharga : hargabarang * increment.value,
 		desc: dipilih.value.desc,
 		id:idbarang.value,
-		stok:dipilih.value.data.stok
+		// stok:dipilih.value.data.stok
 	}
 		let add  = store.masukkeranjang(data)
 			dialogincrement.value = false

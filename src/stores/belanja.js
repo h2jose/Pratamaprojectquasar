@@ -26,7 +26,8 @@ export const useCounterStore = defineStore('counter', {
     userLogouthapus(){
       this.dataLogin = null
     },
-    getalldataFirebase(){
+    getalldataFirebase(doc){
+      this.dataFirebase.push({id:doc.id,data:doc.data()})
     },
       getallPromoData(doc){
       // console.log("tolol")
