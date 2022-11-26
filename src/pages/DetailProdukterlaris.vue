@@ -20,14 +20,17 @@ let hargapcs = ref()
 let dipilih = ref([])
 let dialogcheckout = ref(false)
 let hargabarang = ref()
+let idbarang = ref()
 let totalharga = computed(()=> hargabarang * increment.value )
 
 
-function addtocart(p){
+function addtocart(p,n){
+	batasstok.value = p.stok
+	increment.value = 1
 	dialogincrement.value = true
 	hargabarang = parseInt(p.harga)
 	dipilih.value = p
-	batasstok.value = p.stok
+	idbarang.value = n
 }
 function addtokeranjang(){
 let data  = {
@@ -35,11 +38,15 @@ let data  = {
 		img : dipilih.value.image,
 		totalpesan : increment.value,
 		totalharga : hargabarang * increment.value,
-		desc: dipilih.value.desc
+		desc: dipilih.value.desc,
+		id:idbarang.value,
+		stok:dipilih.value.data.stok
 	}
 		let add  = store.masukkeranjang(data)
 			dialogincrement.value = false
 			dialogcheckout.value = true
+			batasstok.value = 0
+			increment.value = 1
 }
 function belisekarang(p){
 
@@ -65,7 +72,7 @@ function onScroll(info){
 
  onMounted(async()=>{
  	// GET DATA TERLARIS > 
-const q = query(collection(db, "data_carousel"), where("dibeli", ">=", 50));
+const q = query(collection(db, "data_carousel"), where("dibeli", ">=", 10));
  	const querySnapshot = await getDocs(q);
 querySnapshot.forEach((doc) => {
   terlaris.value.push({id:doc.id,data:doc.data()})
@@ -74,7 +81,9 @@ querySnapshot.forEach((doc) => {
 </script>
 <template>
 	<q-page>
-		 <q-page-sticky position="bottom-right" :offset="[18, 130]">
+		 <q-page-sticky position="bottom-right" :offset="[18, 80]"
+		 style="z-index: 40;"
+		 >
             <q-btn fab icon="shopping_cart_checkout" color="accent" 
             @click="dialogcheckout=true"
             />
@@ -91,8 +100,9 @@ querySnapshot.forEach((doc) => {
 							<div class="text-h6">Produk Terlaris</div>
 						</div>
 					</q-toolbar>
-					<q-card class="q-ma-md">
+					<div class="q-pa-md" style="margin-bottom: 30px;">
 						<div v-for="p in terlaris">
+						<q-card class="q-ma-md">
 						<div class="column">
 						<div class="row">
 					</div>
@@ -119,20 +129,22 @@ querySnapshot.forEach((doc) => {
 						size="20px"
 						readonly
 						></q-rating>
-						<q-btn color="pink" flat
-						@click="addtocart(p.data)"
-						>Simpan ke keranjang</q-btn>
+						<q-btn color="pink" 
+						icon="shopping_cart"
+						round
+						@click="addtocart(p.data,p.id)"
+						></q-btn>
 					</div>
 					<div class="row q-pa-md justify-between">
 						tersedia {{p.data.stok}} Pcs lagi
 						<q-btn color="primary"
-						@click="belisekarang(p)"
+						:to="/bayarsekarang/ + p.id  "
 						>beli sekarang</q-btn>
 					</div>
-
 					</div>
-				</div>
 					</q-card>
+				</div>
+					</div>
 			</div>
 			<!-- JIKA SALAH -->
 			<div v-else >
@@ -211,16 +223,6 @@ querySnapshot.forEach((doc) => {
 			       	@click="addtokeranjang"
 			       	>
 			       		tambah ke keranjang
-			       	</q-btn>
-			       </div>
-			       <div class="row justify-center">
-			       	<div class="text-subtitle1">
-			       		atau
-			       	</div>
-			       </div>
-			       <div class="row justify-center q-mt-lg">
-			       	<q-btn color="red" icon="shopping_cart_checkout">
-			       		Bayar Sekarang
 			       	</q-btn>
 			       </div>
         	</div>

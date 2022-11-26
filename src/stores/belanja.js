@@ -19,19 +19,14 @@ export const useCounterStore = defineStore('counter', {
     increment() {
       this.counter++;
     },
-
+    // AUTENTIFIKASI
     tambahdatalogin(p){
       this.dataLogin = p
-      console.log("ada data")
-      console.log(this.dataLogin.email)
-
-      // localStorage.setItem("login",JSON.stringify(p))
     },
-   
-    getalldataFirebase(doc){
-      // console.log("tolol")
-      // console.log(doc)
-      this.dataFirebase.push({id:doc.id,data:doc.data()})
+    userLogouthapus(){
+      this.dataLogin = null
+    },
+    getalldataFirebase(){
     },
       getallPromoData(doc){
       // console.log("tolol")

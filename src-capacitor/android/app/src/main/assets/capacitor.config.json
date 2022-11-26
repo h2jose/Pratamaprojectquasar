@@ -1,0 +1,7 @@
+{
+  "appId": "com.pratama.bangunan",
+  "appName": "pratama bagunan",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "www"
+}

@@ -37,6 +37,10 @@
           				<div class="text-caption text-bold">
           				Total harga : {{toRupiah(p.totalharga)}}</div>
           			</div>
+          			<div class="row">
+          				<q-btn :to="/bayarsekarang/ + p.id  "
+          				 color="red">Bayar sekarang</q-btn>
+          			</div>
           		</div>
           	</q-card-section>
           </q-card>

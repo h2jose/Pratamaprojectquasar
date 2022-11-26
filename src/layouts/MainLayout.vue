@@ -1,31 +1,36 @@
 <script setup>
+
 // COMPONENT
 
   import {ref,onMounted} from 'vue'
   import {app} from 'src/firebase/firebase.js'
   import { useCounterStore } from 'stores/belanja';
-  import { getAuth, onAuthStateChanged } from "firebase/auth";
   import Kamubelumlogin from 'src/components/Kamubelumlogin.vue'
-
- import { useQuasar } from 'quasar'
- const $q = useQuasar()
-
+  let dialogmaulogin = ref(false)
+  let dialogaktif = ref(false)
    const store = useCounterStore();
-   let tab = ref("home")
-   let dialogmaulogin =  ref(false)
-    // CHECK USER LOGIN
-const auth = getAuth(app);
+
+// CHECK USER APAKAH LOGIN
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth();
+
 function checkuser(){
   onAuthStateChanged(auth, (user) => {
   if (user) {
     const uid = user.uid;
-     store.tambahdatalogin(user)
+    dialogaktif.value = true
+   dialogmaulogin.value = false
+    store.tambahdatalogin(user)
   } else {
-    console.log("belum ada user")
-    dialogmaulogin.value = true
+   dialogmaulogin.value = true
+    store.userLogouthapus()
+
   }
-})
+});
 }
+
+
+   let tab = ref("home")
 
 // FIRESTORE get DATA 
       import { getFirestore,collection, doc, getDocs } from 'firebase/firestore'
@@ -37,20 +42,9 @@ function checkuser(){
       docsSnap.forEach((doc)=>{
         store.getalldataFirebase(doc)
       })
-      checkuser()
     }
      
-    if(store.dataLogin.length > 0){
-  $q.notify({
-          message: 'Anda Sudah Login',
-          color: 'primary',
-          multiLine: true,
-          avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
-          actions: [
-            { label: 'ok', color: 'yellow', handler: () => { /* ... */ } }
-          ]
-        })
-    }
+  
     // GET PROMO
     const promoref = collection(db, "promo");
     const promo = await getDocs(promoref);
@@ -59,6 +53,9 @@ function checkuser(){
         store.getallPromoData(doc)
       })
     }
+
+    // CEK USER 
+    checkuser()
  })
 
 </script>
@@ -100,6 +97,29 @@ function checkuser(){
       </q-card>
     </q-dialog>
 
-
+    <!-- dialog ada user aktif -->
+        <q-dialog v-model="dialogaktif"
+    maximized
+    position="bottom"
+     transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <q-card >
+        <q-card-section>
+          <div class="row justify-center">
+            <img src="~assets/successactive.gif"
+            style="max-width:200px"
+             alt="">
+          </div>
+          <div class="row justify-center">
+        <div class="text-h6 ">Anda Berhasil Login</div>
+          </div>
+          <div class="row justify-center">
+        <div class="text-subtitle2 ">{{store.dataLogin.email}}</div>
+          </div>
+          
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-layout>
 </template>
