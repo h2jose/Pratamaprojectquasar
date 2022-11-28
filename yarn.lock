@@ -28,6 +28,18 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.20.3.tgz#5358cf62e380cf69efcb87a7bb922ff88bfac6e2"
   integrity sha512-OP/s5a94frIPXwjzEcv5S/tpQfc6XhxYUnmWpgdqMWGgYCuErA3SzozaRAMQgSZWKeTJxht9aWAkUY+0UzvOFg==
 
+"@capacitor/core@^4.5.0":
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/core/-/core-4.5.0.tgz#06b861bdc6a28b336de81e0ca0e4298343ecb5ca"
+  integrity sha512-afx+hvQIrPcHbTdsBIryE96JlfSt1Rw8cWhb1J34v6Exje6zQZQa3fQZ6gcgkON+zkDIK8u3yRcIps0xMUdsMQ==
+  dependencies:
+    tslib "^2.1.0"
+
+"@capacitor/geolocation@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@capacitor/geolocation/-/geolocation-4.1.0.tgz#1941b5ca4288d7cb5c80940649d4416322b37ee2"
+  integrity sha512-hfI4MUcu1zcJPTvm0g6V3telTGwq9sCU8EnY4hFJpLedbIQeWPthCOSbFtNHAU5mVaAP1Zls3x6TsXL8TX08EA==
+
 "@develoka/angka-rupiah-js@^1.0.3":
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/@develoka/angka-rupiah-js/-/angka-rupiah-js-1.0.3.tgz#5ae32fe0fbe47431a15a117ba371f5486a8a4967"

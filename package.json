@@ -9,6 +9,8 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@capacitor/core": "^4.5.0",
+    "@capacitor/geolocation": "^4.1.0",
     "@develoka/angka-rupiah-js": "^1.0.3",
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@quasar/extras": "^1.0.0",
