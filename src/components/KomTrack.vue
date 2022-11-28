@@ -4,14 +4,33 @@
   import { getFirestore,collection,query,where, doc, getDocs } from 'firebase/firestore'
   import { useCounterStore } from 'stores/belanja';
    const store = useCounterStore();
+
+       import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl';
+  import 'mapbox-gl/dist/mapbox-gl.css';
+    let token = "pk.eyJ1IjoiYm9id2F0Y2hlcngiLCJhIjoiY2xiMGwwZThrMWg3aTNwcW1mOGRucHh6bSJ9.kNHlmRqkRSxYNeipcKkJhw"
+
    let datatransaksi = ref([])
+   let dialogdetails = ref(false)
+   let resultdialog = ref([])
+ 
+// FORMAT IDR
+   const formatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+})
+
+// SHOW DETAIL
+   function showdetail(p){
+   	dialogdetails.value = true
+   	resultdialog.value = p
+   }
 
    // GET DATA TRANSAKSI
 	 onMounted(async()=>{
     	// GET DATA TERLARIS > 
    const db = getFirestore(app);
    let email = store.dataLogin.email 
-const q = query(collection(db, "transaksi"), where("email", "==",email ));
+const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gmail.com" ));
  	const querySnapshot = await getDocs(q);
  	if(querySnapshot != null){
  		querySnapshot.forEach((doc) => {
@@ -28,16 +47,51 @@ const q = query(collection(db, "transaksi"), where("email", "==",email ));
 				<div class="text-body1">Data pembelian</div>
 			</div>
 			<!-- JIKA ADA DATA -->
-			<div v-if="datatransaksi.value != null">
+			<div v-if="datatransaksi != undefined">
+				<!-- {{JSON.stringify(datatransaksi)}} -->
+				<div v-for="p in datatransaksi">
 				<div class="row">
-				<q-card>
-					{{JSOn.stringify(datatransaksi)}}
-				</q-card>
-			</div>
+					<q-card class="q-pa-md" style="width: 100%;"
+					  v-ripple
+					  @click="showdetail(p)"
+					>
+						<div class="column">
+							<div class="row">
+								<div class="text-h6">{{p.data.email}}</div>
+							</div>
+							<div class="row bg-orange text-white">
+								<div class="text-subtitle2">{{p.data.details.order_id}}</div>
+							</div>
+							<div class="row justify-between">
+								<div class="text-caption">
+									Nama penerima : {{p.data.nama}}
+								</div>
+								<div class="text-caption">
+									 Total : <b>{{formatter.format(p.data.harga )}}</b>
+								</div>
+							</div>
+							<div class="row ">
+								<div class="text-caption">
+									Alamat : {{p.data.alamat}}
+								</div>
+							</div>
+							<div class="row ">
+								<div class="text-caption">
+									Jenis Pembayaran :
+									{{p.data.details.card_type}}
+
+									 {{p.data.details.bank}}
+								</div>
+							</div>
+
+						</div>
+					</q-card>
+				</div>		
+			  </div>
 			</div>
 
 			<!-- JIKA KOSONG -->
-			<div v-if="store.dataLogin.email != null && datatransaksi.value == null">
+			<div v-if="datatransaksi == null">
 					<div class="column justify-center">
 						<div class="row justify-center">
 							<img src="~assets/emptytrack.gif"
@@ -53,7 +107,7 @@ const q = query(collection(db, "transaksi"), where("email", "==",email ));
 			</div>
 
 			<!-- JIKA BELUM LOGIN -->
-			<div v-if="store.dataLogin.value == null"
+			<div v-if="store.dataLogin == null"
 			style="margin-top:70px"
 			>
 				<div class="column justify-center">
@@ -69,10 +123,48 @@ const q = query(collection(db, "transaksi"), where("email", "==",email ));
 					</div>
 				</div>
 			</div>
+
 			<div v-else>
-				null
 			</div>
+		
 
 		</div>
 	</div>
+
+	<!-- dialog details -->
+	<q-dialog v-model="dialogdetails" maximized
+	   transition-show="slide-up"
+      transition-hide="slide-down"
+	>
+		<q-card>
+			<q-card-section class="bg-primary text-white">
+				<div class="row justify-between">
+					<div class="text-h6">Detail Penjualan</div>
+					<q-btn round icon="close" size="14px"
+					@click="dialogdetails=false"
+					></q-btn>
+				</div>
+			</q-card-section>
+			<q-card-section style="margin:0px;padding:0px">
+				<div style="position: absolute;top:20px;right: 0px;">
+                  <q-btn color="orange">loo 
+                  
+                  </q-btn>
+				</div>
+
+			<!-- FRAME MAPS -->
+			 <MapboxMap
+			    style="height: 400px;width: 100%;"
+			    :access-token="token"
+			    map-style="mapbox://styles/mapbox/streets-v11">
+			    <MapboxMarker :lng-lat="[resultdialog.data.positionlongitude, resultdialog.data.positionlatitude]" >
+			    	 <template v-slot:popup>
+			        <p>Kurir</p>
+			      </template>
+			    </MapboxMarker>
+			  </MapboxMap>
+
+			</q-card-section>
+		</q-card>
+	</q-dialog>
 </template>

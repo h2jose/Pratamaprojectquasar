@@ -54,7 +54,10 @@ caribarang()
 				<div v-for="p in resultdata">
 					<div class="row justify-center">
 						<div class="col-md-4 col-xl-12 col-sm-6">
-				<q-card class="q-ma-md">
+				<q-card class="q-ma-md"
+				v-ripple
+				>
+
 					<div class="row q-pa-md justify-center">
 						<img :src="p.data.image"
 						style="max-width:100%"
@@ -69,6 +72,11 @@ caribarang()
 					<div style="width:60%">
 					<div class="text-caption">{{p.data.desc.substring(0,50) + '...'}}</div>
 					</div>
+				</div>
+				<div class="row justify-end q-pa-md">
+					<q-btn color="primary"
+				:to="'/bayarsekarang/' +p.id "
+				>Details</q-btn>
 				</div>
 				</q-card>
 						</div>

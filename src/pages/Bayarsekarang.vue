@@ -279,9 +279,9 @@ successHandler, errorHandler,
 						<div class="row q-pa-md">
 					<q-input rounded outlined 
 					required
+					type="email"
 						v-model="emailanda" label="email"
             style="width:100%"
-            disable
 					 />
 						</div>
 						<div class="row q-pa-md">

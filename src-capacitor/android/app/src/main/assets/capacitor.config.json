@@ -3,5 +3,9 @@
   "appName": "pratama bagunan",
   "bundledWebRuntime": false,
   "npmClient": "yarn",
-  "webDir": "www"
+  "webDir": "www",
+  "linuxAndroidStudioPath": "/home/minto/Downloads/android/android-studio/bin",
+  "server": {
+    "url": "http://192.168.100.10:9500"
+  }
 }

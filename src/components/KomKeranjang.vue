@@ -11,7 +11,9 @@
 	<div class="row">
 		<div class="text-h6">Keranjang Saya</div>
 	</div>
-		<div v-for="p in datakeranjang">
+	<!-- jika ada barang -->
+		<div v-if="datakeranjang.length > 0">
+			<div v-for="p in datakeranjang">
 	<div class="row">
           <q-card class="q-ma-md">
           	<q-card-section>
@@ -46,6 +48,16 @@
           </q-card>
 		</div>
 	</div>
+		</div>
+
+		<!-- jika barang kosong -->
+		<div v-else>
+     <div class="column justify-center">
+     	<div class="row justify-center">
+     		<div class="text-body1">Belum ada apapun di sini</div>
+     	</div>
+     </div>
+		</div>
 </div>
 	</div>
 </template>

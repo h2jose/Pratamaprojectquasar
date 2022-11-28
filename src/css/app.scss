@@ -5,3 +5,8 @@ src: url('../fonts/MartelSans-Bold.ttf');
 .title{
     font-family:MartelSansBlack;
 }
+
+::-webkit-scrollbar {
+   display: none;
+   overflow:hidden
+}
