@@ -16,11 +16,15 @@
 			    to="/detailterlaris">Lihat semua</q-btn>
 		     </div>
 		      <q-scroll-area style="height: 300px; max-width: 100%;">
-		    		 <div class="row q-pa-md" style="overflow-x: scroll;">
+		    	 <div class="row q-pa-md no-wrap " >
 		    <div v-for="p in getalldata">
-		     	<q-card style="border-radius: 30px;
+		     	<router-link
+		     	:to="/bayarsekarang/ + p.id"
+		     	style="text-decoration: none;color: inherit;"
+		     	>
+		     		<q-card style="border-radius: 30px;
 		     	max-width: 150px;
-		     	">
+		     	" class="q-ml-md">
 		     		<div class="column">
 		     			<img :src="p.data.image" 
 		     			style="max-height:100px;
@@ -47,6 +51,7 @@
 		     			</div>
 		     		</div>
 		     	</q-card>
+		     	</router-link>
 		     </div>
 		    </div>
 		    	</q-scroll-area>

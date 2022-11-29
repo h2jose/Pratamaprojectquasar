@@ -84,7 +84,8 @@ querySnapshot.forEach((doc) => {
 		 <q-page-sticky position="bottom-right" :offset="[18, 80]"
 		 style="z-index: 40;"
 		 >
-            <q-btn fab icon="shopping_cart_checkout" color="accent" 
+            <q-btn
+             fab icon="shopping_cart_checkout" color="accent" 
             @click="dialogcheckout=true"
             />
           </q-page-sticky>
@@ -130,16 +131,24 @@ querySnapshot.forEach((doc) => {
 						readonly
 						></q-rating>
 						<q-btn color="pink" 
+						v-if="p.data.stok != '0'"
 						icon="shopping_cart"
 						round
 						@click="addtocart(p.data,p.id)"
 						></q-btn>
 					</div>
 					<div class="row q-pa-md justify-between">
-						tersedia {{p.data.stok}} Pcs lagi
+						<div class="text-subtitle2">tersedia {{p.data.stok}} Pcs </div>
 						<q-btn color="primary"
+						v-if="p.data.stok != '0'"
 						:to="/bayarsekarang/ + p.id  "
 						>beli sekarang</q-btn>
+						<div v-if="p.data.stok  == '0'">
+							<div class="row">
+								<q-icon name="close" color="red" size="20px"></q-icon>
+							<div class="text-subtitle2 text-red text-bold">barang Kosong</div>
+							</div>
+						</div>
 					</div>
 					</div>
 					</q-card>

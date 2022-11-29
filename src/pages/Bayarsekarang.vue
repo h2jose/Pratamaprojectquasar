@@ -3,13 +3,13 @@
 	import Kamubelumlogin from 'src/components/Kamubelumlogin.vue'
   import { useCounterStore } from 'stores/belanja';
   import {app} from 'src/firebase/firebase.js'
-  import { getFirestore, collection,doc, getDoc,addDoc } from 'firebase/firestore'
+  import { getFirestore, collection,doc,setDoc, getDoc,addDoc } from 'firebase/firestore'
   import {useRoute} from 'vue-router'
   import { Dialog } from 'quasar'
   import { useQuasar } from 'quasar'
     const $q = useQuasar()
 // GELOCATION TRACK PEMBELI
-  import { Geolocation } from '@capacitor/geolocation';
+  // import { Geolocation } from '@capacitor/geolocation';
 
 
 
@@ -20,14 +20,12 @@
    let dialoglogin = ref(false)
    let dialogcektoken = ref(false)
    let dialogalamat = ref(false)
-   let dialogceklokasi = ref(false)
    let dialogberhasilbayar = ref(false)
+   let dialogbarangkosong = ref(false)
    // DATA PEMBELI
    let databelanja = ref([])
    let jumlahpesan = ref(1)
    let batasstok = ref()
-   let positionlatitude = ref()
-   let positionlongitude = ref()
    // DATA PENGGUNA
    let emailanda = ref("") 
    let namalengkap = ref("")
@@ -47,6 +45,9 @@ const docRef = doc(db, "data_carousel", param);
 try {
     const docSnap = await getDoc(docRef);
     databelanja.value = docSnap.data()
+    if(databelanja.value.stok == "0"){
+    	dialogbarangkosong.value = true
+    }
 } catch(error) {
     console.log(error)
 }
@@ -72,20 +73,6 @@ try {
 // alamat ambil 
  async function ambilalamat(){
  	dialogalamat.value = true
- 	dialogceklokasi.value = true
- 	 const coordinates = await Geolocation.getCurrentPosition() || navigator.geolocation.getCurrentPosition( 
-successHandler, errorHandler, 
-{enableHighAccuracy: true, maximumAge: 10000});
- 	 console.log("tolol")
- 	  console.log('Current position:', coordinates.coords.latitude);
- 	  console.log('Current position:', coordinates.coords.longitude);
- 	  positionlatitude.value = coordinates.coords.latitude
- 	  positionlongitude.value = coordinates.coords.longitude
- 	  if(coordinates.coords.latitude != null 
- 	  	&& coordinates.coords.longitude != null){
- 	dialogceklokasi.value = false
-
- 	  }
  }
 
  // BAYAR SEKARANG
@@ -126,9 +113,8 @@ successHandler, errorHandler,
 									 		pesanan:JSON.stringify(databelanja),
 									 		createdAt:Date.now(),
 									 		details:result,
-									 		positionlatitude:positionlatitude.value,
-									 		positionlongitude:positionlongitude.value
 									 	}
+									 	// MENAMBAH KE TABLE TRANSAKSI
 									 	addDoc(dbreftransaksi, data)
 											.then(docRef => {
 											    dialogalamat.value = false
@@ -138,6 +124,26 @@ successHandler, errorHandler,
 												alert("pembayaran anda error")
 											    console.log(error);
 											})
+									// EDIT QTY BERKURANG
+						const docRef = doc(db, "data_carousel", param);
+						let editstok = {
+							desc:databelanja.value.desc,
+							dibeli:databelanja.value.dibeli + 1,
+							harga:databelanja.value.harga,
+							image:databelanja.value.image,
+							nama_barang:databelanja.value.nama_barang,
+							ratting:databelanja.value.ratting,
+							stok : parseInt(databelanja.value.stok) - jumlahpesan.value,
+							category:databelanja.value.category,
+						}
+						setDoc(docRef, editstok)
+						.then(docRef => {
+						    console.log("berhasil update stok");
+						})
+						.catch(error => {
+							alert(databelanja.stok.value)
+						    console.log(error);
+						})
 	          },
 	          onPending: function(result){
 	            /* You may add your own implementation here */
@@ -207,7 +213,10 @@ successHandler, errorHandler,
 						<div class="row justify-between q-pa-md">
 							<div class="text-caption">Stok : {{databelanja.stok}} Pcs</div>
 							<div class="text-subtitle1 text-orange text-bold"> 
+								<div v-if="databelanja.harga != null">
+									
 							{{formatter.format(databelanja.harga )}} </div>
+								</div>
 						</div>
 							<!-- btn increment -->
 						<div class="row justify-around">
@@ -226,7 +235,10 @@ successHandler, errorHandler,
 						</div>
 						<div class="row">
 							<div class="text-subtitle2">total harga : 
-             <div class="text-bold text-h6">{{formatter.format(databelanja.harga * jumlahpesan)}}</div>
+             <div class="text-bold text-h6">
+             	<div v-if="databelanja.harga != null">
+             {{formatter.format(databelanja.harga * jumlahpesan)}}</div>
+             	</div>
 							</div>
 						</div>
 					</div>
@@ -331,18 +343,7 @@ successHandler, errorHandler,
 			</q-card>
 		</q-dialog>
 
-		<!-- dialog cek lokasi -->
-		<q-dialog v-model="dialogceklokasi" persistent>
-			<q-card>
-				<q-card-section>
-					<div class="column">
-						<div class="row">
-								Sedang Mencari lokasi anda ....
-						</div>
-					</div>
-				</q-card-section>
-			</q-card>
-		</q-dialog>
+	
 
 
 		<!-- dialog berhasil bayar -->
@@ -362,5 +363,39 @@ successHandler, errorHandler,
 			</q-card>
 		</q-dialog>
 
+		<!-- dialog barang kosong -->
+		<q-dialog v-model="dialogbarangkosong"
+		persistent
+		maximized
+		transition-hide="slide-down"
+		transition-show="slide-up"
+		>
+			<q-card>
+				<q-card-section>
+					<div class="column justify-center">
+						<div class="row justify-center">
+							<img src="~assets/barangkosong.gif"
+                    style="max-height: 200px;"
+					 alt="">
+						</div>
+					</div>
+				</q-card-section>
+				<q-card-section>
+              <div class="column justify-center">
+              	<div class="row justify-center">
+              		<div class="text-body1 text-bold">
+              			Barang ini sudah habis
+              		</div>
+              	</div>
+              	<div class="row q-pa-md justify-center">
+              		<q-btn  icon="arrow_back"
+              		color="primary"
+              		@click="$router.go(-1)"
+              		>Kembali</q-btn>
+              	</div>
+              </div>
+				</q-card-section>
+			</q-card>
+		</q-dialog>
 	</q-page>
 </template>

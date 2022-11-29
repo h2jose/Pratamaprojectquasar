@@ -169,7 +169,7 @@ module.exports = configure(function (/* ctx */) {
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-capacitor-apps/configuring-capacitor
     capacitor: {
       hideSplashscreen: true,
-       linuxAndroidStudio:"/root/Android/Sdk"
+       linuxAndroidStudio:"/home/minto/Downloads/android/android-studio/bin"
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli/developing-electron-apps/configuring-electron
