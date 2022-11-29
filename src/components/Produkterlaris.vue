@@ -29,6 +29,7 @@
 		     			<div class="row">
 		     				<img :src="p.data.image" 
 		     			style="max-height:100px;
+		     			max-width: 180px;
 		     			border-top-left-radius: 30px;
 		     			border-top-right-radius: 30px;
 		     			background-size: cover;"

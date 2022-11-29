@@ -57,7 +57,7 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 			<!-- JIKA ADA DATA -->
 			<div v-if="datatransaksi != undefined">
 				<!-- {{JSON.stringify(datatransaksi)}} -->
-				<div v-for="p in datatransaksi.reverse()" style="margin-bottom: 30px">
+				<div v-for="p in datatransaksi" style="margin-bottom: 30px">
 				<div class="row">
 					<q-card class="q-pa-md" style="width: 100%;"
 					  v-ripple
