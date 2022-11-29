@@ -68,9 +68,12 @@ caribarang()
 				<div class="text-caption text-bold text-primary">{{toRupiah(p.data.harga)}}</div>
 				
 				</div>
-				<div class="row q-pa-sm">
+				<div class="row q-pa-sm justify-between">
 					<div style="width:60%">
-					<div class="text-caption">{{p.data.desc.substring(0,50) + '...'}}</div>
+					<div class="text-caption">{{p.data.desc.substring(0,40) + '...'}}</div>
+					</div>
+					<div class="text-caption">
+						{{p.data.dibeli}} x dibeli
 					</div>
 				</div>
 				<div class="row justify-between q-pa-md">

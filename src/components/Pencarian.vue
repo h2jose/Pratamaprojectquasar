@@ -7,7 +7,9 @@ import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/fires
    let hargacari = ref("3000")
    let nilaiharga = ref(parseInt(hargacari))
    let carisesuatu = ref("")
-
+   let hasilpencarian = ref([])
+   let pencarianid = ref()
+   let dialogditemukan = ref(false)
    // format idr
     const formatter = new Intl.NumberFormat('id-ID', {
   style: 'currency',
@@ -15,11 +17,29 @@ import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/fires
 })
 // proses cari
 function prosescari(){
-	alert("123")
+	pencarianbarang()
 }
 
+async function pencarianbarang(){
+	const q = query(collection(db, "data_carousel"), where("nama_barang", "==",carisesuatu.value ));
+ 	const hasilsnap = await getDocs(q);
+ 	if(hasilsnap != null){
+ 		dialogditemukan.value = true
+ 		hasilsnap.forEach((doc) => {
+	console.log(doc.data())
+	if(doc.data().nama_barang == carisesuatu.value){
+		hasilpencarian.value = doc.data()
+		pencarianid.value = doc.id
+	}
+	if(doc.data().nama_barang != carisesuatu.value){
+		alert("kosong")
+	}
 
- // cari barang fungsi  
+});
+ 	}
+}
+
+ // cari barang PALING BANYAK DI BELI
 async function searchbarang(){
 
 const q = query(collection(db, "data_carousel"), where("dibeli", ">", 10));
@@ -111,5 +131,59 @@ onMounted(()=>{
 		</div>
 	</div>
 	</div>
+<!-- JIKA PENCARIAN DITEMUKAN -->
+<q-dialog v-model="dialogditemukan" position="bottom">
+	<q-card>
+		<q-card-section v-if="hasilpencarian.nama_barang == carisesuatu">
+					<div class="column">
+						<div class="row justify-center">
+							<img :src="hasilpencarian.image"
+                           style="max-height: 170px"
+							 alt="">
+						</div>
+						<div class="row justify-center">
+							<div class="text-h6">
+								{{hasilpencarian.nama_barang}}
+							</div>
+						</div>
+						<div class="row justify-center">
+							<div class="text-caption">
+								{{hasilpencarian.desc}}
+							</div>
+						</div>
+						<div class="row justify-center q-pa-md">
+							<div class="text-body1 text-bold">
+							{{formatter.format(hasilpencarian.harga)}}
+								
+							</div>
+						</div>
+						<div class="row justify-between">
+							<div class="text-subtitle1 text-bold">
+							stok  : {{hasilpencarian.stok == 0 ?
+								"habis":hasilpencarian.stok}}
+							</div>
+							<div class="text-caption">
+							 {{hasilpencarian.dibeli}} x dibeli
+							</div>
+						</div>
+						<div class="row justify-center q-pa-md">
+							<q-btn
+							v-if="hasilpencarian.stok !== 0 && hasilpencarian.stok !=='0'"
+							color="primary"
+							:to="/bayarsekarang/ + pencarianid"
+							>Beli Sekarang</q-btn>
+						</div>
+					</div>
+		</q-card-section>
+		<q-card-section v-if="hasilpencarian.nama_barang !== carisesuatu">
+			<div class="column">
+				<div class="row justify-center">
+					<div class="text-body1">Barang tidak Ditemukan</div>
+				</div>
+			</div>
+		</q-card-section>
+	</q-card>
+</q-dialog>
+
 </div>
 </template>

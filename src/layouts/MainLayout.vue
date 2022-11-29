@@ -57,7 +57,20 @@ function checkuser(){
     // CEK USER 
     checkuser()
  })
-
+// REFRESH DATA firebase
+//  async function refreshdatafirebase(done){
+// store.hapusdatafirebase()
+//   setTimeout(async()=>{
+//   const colRef = collection(db, "data_carousel");
+//   const docsSnap = await getDocs(colRef);
+//     if(docsSnap !== undefined){
+//       docsSnap.forEach((doc)=>{
+//         store.getalldataFirebase(doc)
+//       })
+//     }
+//     done()
+//   },2000)
+// }
 </script>
 <template>
   <q-layout>

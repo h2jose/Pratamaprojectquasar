@@ -40,6 +40,9 @@ export const useCounterStore = defineStore('counter', {
       console.log(p)
       // localstorage.setItem
     },
+    hapusdatafirebase(){
+      this.dataFirebase = null
+    },
     logoutlogin(){
       this.dataLogin = ""
       console.log(this.dataLogin)

@@ -74,10 +74,10 @@
 			    <q-btn flat class="text-orange text-caption text-bold"
 			    to="/detailterlaris">Lihat semua</q-btn>
 		     </div>
-		     <div class="row q-pa-md justify-center">
-		     	<q-skeleton width="90px" height="170px"></q-skeleton>
-		     	<q-skeleton width="130px" height="170px"></q-skeleton>
-		     	<q-skeleton width="130px" height="170px"></q-skeleton>
+		    	 <div class="row no-wrap justify-between">
+		     	<q-skeleton width="120px" height="70px"></q-skeleton>
+		     	<q-skeleton width="120px" height="70px"></q-skeleton>
+		     	<q-skeleton width="120px" height="70px"></q-skeleton>
 		     </div>
 		</div>
 		</div>

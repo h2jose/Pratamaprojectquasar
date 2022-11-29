@@ -57,7 +57,7 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 			<!-- JIKA ADA DATA -->
 			<div v-if="datatransaksi != undefined">
 				<!-- {{JSON.stringify(datatransaksi)}} -->
-				<div v-for="p in datatransaksi">
+				<div v-for="p in datatransaksi.reverse()" style="margin-bottom: 30px">
 				<div class="row">
 					<q-card class="q-pa-md" style="width: 100%;"
 					  v-ripple
@@ -77,6 +77,11 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 								<div class="text-caption">
 									 Total : <b>{{formatter.format(p.data.harga )}}</b>
 								</div>
+							</div>
+							<div class="row ">
+							<div class="text-caption">
+								Jumlah pesanan : {{p.data.jumlahpesan}} item
+							</div>
 							</div>
 							<div class="row q-pa-md">
 								<div class="text-caption">
@@ -100,7 +105,7 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 						</div>
 					</q-card>
 				</div>	
-				<div class="row bg-primary text-white">
+				<div class="row bg-primary justify-end text-white">
 					<q-btn
 					flat 
 					@click="showinformasi(p.data)"
