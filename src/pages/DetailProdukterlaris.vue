@@ -89,7 +89,7 @@ querySnapshot.forEach((doc) => {
             @click="dialogcheckout=true"
             />
           </q-page-sticky>
-		<div style="height:10000px"> 
+		<div > 
 			    <q-scroll-observer @scroll="onScroll" />
 			<!-- JIKA BENAR -->
 			<div v-if="terlaris.length > 0">

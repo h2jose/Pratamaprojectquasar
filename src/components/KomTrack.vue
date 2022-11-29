@@ -3,6 +3,7 @@
   import {app} from 'src/firebase/firebase.js'
   import { getFirestore,collection,query,where, doc, getDocs } from 'firebase/firestore'
   import { useCounterStore } from 'stores/belanja';
+  import moment from 'moment'
    const store = useCounterStore();
 
        import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl';
@@ -12,25 +13,32 @@
    let datatransaksi = ref([])
    let dialogdetails = ref(false)
    let resultdialog = ref([])
- 
-// FORMAT IDR
-   const formatter = new Intl.NumberFormat('id-ID', {
+   let detailbelanja =  ref([])
+ 	let dialogbelanja = ref(false)
+ 	let detailitem = ref([])
+
+// format IDR
+ const formatter = new Intl.NumberFormat('id-ID', {
   style: 'currency',
   currency: 'IDR',
 })
-
-// SHOW DETAIL
+// SHOW DETAIL track kurir
    function showdetail(p){
    	dialogdetails.value = true
    	resultdialog.value = p
    }
-
+// show info belanja
+function showinformasi(p){
+	dialogbelanja.value = true
+	detailbelanja.value = p
+	detailitem.value = JSON.parse(p.pesanan)
+}
    // GET DATA TRANSAKSI
 	 onMounted(async()=>{
     	// GET DATA TERLARIS > 
    const db = getFirestore(app);
    let email = store.dataLogin.email 
-const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gmail.com" ));
+const q = query(collection(db, "transaksi"), where("email", "==", email));
  	const querySnapshot = await getDocs(q);
  	if(querySnapshot != null){
  		querySnapshot.forEach((doc) => {
@@ -70,7 +78,7 @@ const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gm
 									 Total : <b>{{formatter.format(p.data.harga )}}</b>
 								</div>
 							</div>
-							<div class="row ">
+							<div class="row q-pa-md">
 								<div class="text-caption">
 									Alamat : {{p.data.alamat}}
 								</div>
@@ -83,10 +91,21 @@ const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gm
 									 {{p.data.details.bank}}
 								</div>
 							</div>
+							<div class="row justify-end">
+								<div class="text-caption text-grey">
+									{{moment().format('ll')}}
+								</div>
+							</div>
 
 						</div>
 					</q-card>
-				</div>		
+				</div>	
+				<div class="row bg-primary text-white">
+					<q-btn
+					flat 
+					@click="showinformasi(p.data)"
+					>Details</q-btn>
+				</div>	
 			  </div>
 			</div>
 
@@ -105,7 +124,7 @@ const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gm
 						</div>	
 					</div>
 			</div>
-
+		
 			<!-- JIKA BELUM LOGIN -->
 			<div v-if="store.dataLogin == null"
 			style="margin-top:70px"
@@ -124,9 +143,17 @@ const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gm
 				</div>
 			</div>
 
-			<div v-else>
+			<div v-if="datatransaksi.length <= 0 ">
+				<div class="column">
+					<div class="row justify-center">
+						<q-spinner size="80px">
+						</q-spinner>
+					</div>
+				</div>
 			</div>
-		
+			<div v-else>
+				
+			</div>
 
 		</div>
 	</div>
@@ -167,4 +194,79 @@ const q = query(collection(db, "transaksi"), where("email", "==","bobwatcherx@gm
 			</q-card-section>
 		</q-card>
 	</q-dialog>
+<!-- dialog belanja -->
+<q-dialog v-model="dialogbelanja"
+transition-show="slide-up"
+transition-hide="slide-down"
+maximized
+>
+	<q-card>
+		<q-card-section>
+				<q-toolbar>
+					<div class="row">
+						<q-btn icon="arrow_back" flat
+                       @click="dialogbelanja=false"
+						></q-btn>
+					<div class="text-h6">Data Detail Belanja anda</div>
+					</div>
+				</q-toolbar>
+		</q-card-section>
+		<q-card-section>
+           <!-- jika ada data -->
+           <q-card class="q-pa-md">
+           	<div class="column">
+           	<div class="row">
+           		<div class="text-caption">
+           			Order Id : {{detailbelanja.details.order_id}}
+           		</div>
+           	</div>
+           	<div class="row justify-between">
+           		<div class="text-body1">
+           			Total pesanan : {{detailbelanja.jumlahpesan}}
+           		</div>
+           		<div class="text-caption">
+           			Hrg peritem : {{parseInt(detailbelanja.harga) / parseInt(detailbelanja.jumlahpesan)}}
+           		</div>
+           	</div>
+           		<div class="row">
+           		<div class="text-subtitle2">
+           			No Hp Pembeli : {{detailbelanja.phone}}
+           		</div>
+           	</div>
+           </div>
+           </q-card>
+		</q-card-section>
+		<q-card-section>
+				<q-scroll-area 
+				  class="q-mt-md"
+				  style="height: 280px; max-width:100%">
+				<div class="row no-wrap">
+					<div v-for="x in detailitem">
+			     <q-card >
+                     <div class="column">
+                     	<div class="row">
+                     		 <img :src="x.image" 
+                           style="max-height: 130px"
+                      alt="">
+                     	</div>
+                     </div>
+			     </q-card>
+					</div>
+				</div>
+			</q-scroll-area>
+		</q-card-section>
+		<q-card-section
+		class="bg-orange text-white"
+		style="position: absolute;bottom: 0;
+		width:100%;
+		left:0px;
+		right:0px;
+		"
+		>
+			<div class="text-h6">
+				Total Harga : {{formatter.format(detailbelanja.harga)}}
+			</div>
+		</q-card-section>
+	</q-card>
+</q-dialog>
 </template>

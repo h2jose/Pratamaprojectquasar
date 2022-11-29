@@ -73,10 +73,19 @@ caribarang()
 					<div class="text-caption">{{p.data.desc.substring(0,50) + '...'}}</div>
 					</div>
 				</div>
-				<div class="row justify-end q-pa-md">
+				<div class="row justify-between q-pa-md">
+					<div class="text-body1">
+						tersedia {{p.data.stok}} pcs
+					</div>
 					<q-btn color="primary"
+					v-if="p.data.stok !== '0' && p.data.stok !== 0"
 				:to="'/bayarsekarang/' +p.id "
 				>Details</q-btn>
+				<div v-if="p.data.stok == '0' && p.data.stok == 0">
+					<div class="text-subtitle2 text-red">
+						Barang habis
+					</div>
+				</div>
 				</div>
 				</q-card>
 						</div>

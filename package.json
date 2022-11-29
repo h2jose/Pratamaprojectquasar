@@ -20,6 +20,7 @@
     "firebase-admin": "^11.3.0",
     "hellojs": "^2.0.0-4",
     "mapbox-gl": "^2.11.0",
+    "moment": "^2.29.4",
     "pinia": "^2.0.11",
     "pinia-plugin-persistedstate": "^2.4.0",
     "quasar": "^2.6.0",

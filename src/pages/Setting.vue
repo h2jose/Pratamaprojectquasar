@@ -36,10 +36,10 @@ function logoutbtn(){
       <q-card class="q-pa-md">
         <div class="column">
           <div class="row">
-            <div class="text-h6">{{datauser.displayName}}</div>
+            <div class="text-h6">{{store.dataLogin.displayName}}</div>
           </div>
           <div class="row ">
-            <div class="text-body1 text-bold">{{datauser.email}}</div>
+            <div class="text-body1 text-bold">{{store.dataLogin.email}}</div>
           </div>
         </div>
       </q-card>
@@ -83,7 +83,7 @@ function logoutbtn(){
 
     <!-- dialog login -->
     <q-dialog v-model="dialoglogin" position="bottom">
-      <q-card>
+      <q-card class="q-pa-md">
         <Kamubelumlogin/>
       </q-card>
     </q-dialog>

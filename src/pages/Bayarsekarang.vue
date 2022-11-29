@@ -7,6 +7,7 @@
   import {useRoute} from 'vue-router'
   import { Dialog } from 'quasar'
   import { useQuasar } from 'quasar'
+  import moment from 'moment'
     const $q = useQuasar()
 // GELOCATION TRACK PEMBELI
   // import { Geolocation } from '@capacitor/geolocation';
@@ -111,7 +112,7 @@ try {
 									 		alamat:alamat.value,
 									 		jumlahpesan:jumlahpesan.value,
 									 		pesanan:JSON.stringify(databelanja),
-									 		createdAt:Date.now(),
+									 		createdAt:moment().format('LL'),
 									 		details:result,
 									 	}
 									 	// MENAMBAH KE TABLE TRANSAKSI
@@ -200,9 +201,14 @@ try {
 				>
 					<div class="column">
 						<div class="row justify-center">
-							<img :src="databelanja.image" 
+							<img
+							v-if="databelanja.image !== null"
+							 :src="databelanja.image" 
 						style="max-height: 180px;"
 						alt="">
+						<div v-if="databelanja.image == null">
+							<q-spinner size="60px"></q-spinner>
+						</div>
 						</div>
 						<div class="row justify-center q-pa-md">
 							<div class="text-body1">{{databelanja.nama_barang}}</div>
