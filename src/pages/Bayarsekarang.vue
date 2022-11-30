@@ -102,6 +102,7 @@ try {
  					onSuccess: function(result){
 	            alert("payment success!"); console.log(result);
 	            // TAMBAH DATA KE FIREBASE KALO BERHASIL
+	            	moment.locale("id")
 	            	const dbreftransaksi = collection(db, "transaksi");
 								 	let data = {
 									 		harga:parseInt(databelanja.value.harga) * parseInt(jumlahpesan.value),
@@ -111,8 +112,18 @@ try {
 									 		phone:nomorhp.value,
 									 		alamat:alamat.value,
 									 		jumlahpesan:jumlahpesan.value,
-									 		pesanan:JSON.stringify(databelanja),
+									 		pesanan:{
+									 			nama_barang:databelanja.value.nama_barang,
+									 			image:databelanja.value.image,
+									 			dibeli:databelanja.value.dibeli + 1,
+									 			desc:databelanja.value.desc,
+									 			category:databelanja.value.category,
+									 			ratting:databelanja.value.ratting,
+									 			harga:databelanja.value.harga,
+									 		},
 									 		createdAt:moment().format('LL'),
+									 		timeAt:moment().format('LT'),
+									 		datenow:Date.now(),
 									 		details:result,
 									 	}
 									 	// MENAMBAH KE TABLE TRANSAKSI

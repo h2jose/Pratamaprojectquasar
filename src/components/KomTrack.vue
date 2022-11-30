@@ -1,8 +1,9 @@
 <script setup>
 	import {ref,onMounted} from 'vue'
   import {app} from 'src/firebase/firebase.js'
-  import { getFirestore,collection,query,where, doc, getDocs } from 'firebase/firestore'
+  import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/firestore'
   import { useCounterStore } from 'stores/belanja';
+  import KomtrackHariIni from 'src/components/KomtrackHariIni.vue'
   import moment from 'moment'
    const store = useCounterStore();
 
@@ -16,6 +17,8 @@
    let detailbelanja =  ref([])
  	let dialogbelanja = ref(false)
  	let detailitem = ref([])
+   let email = store.dataLogin.email
+
 
 // format IDR
  const formatter = new Intl.NumberFormat('id-ID', {
@@ -33,32 +36,41 @@ function showinformasi(p){
 	detailbelanja.value = p
 	detailitem.value = JSON.parse(p.pesanan)
 }
+
    // GET DATA TRANSAKSI
 	 onMounted(async()=>{
     	// GET DATA TERLARIS > 
    const db = getFirestore(app);
-   let email = store.dataLogin.email 
 const q = query(collection(db, "transaksi"), where("email", "==", email));
  	const querySnapshot = await getDocs(q);
  	if(querySnapshot != null){
  		querySnapshot.forEach((doc) => {
-	console.log(doc.data())
+	// console.log(doc.data())
   datatransaksi.value.push({id:doc.id,data:doc.data()})
+  datatransaksi.value.reverse()
 });
  	}
 })
 </script>
 <template>
 	<div>
-		<div class="column q-pa-md">
-			<div class="row">
-				<div class="text-body1">Data pembelian</div>
-			</div>
 			<!-- JIKA ADA DATA -->
 			<div v-if="datatransaksi != undefined">
+			<div class="column q-pa-md">
+			<div class="row" style="width: 100%;">
+				<KomtrackHariIni/>
+			</div>
+
+			<div class="row q-mt-md jus">
+				<div class="text-body1 text-bold">
+				Barang yg sudah sampai
+			</div>
+			</div>
 				<!-- {{JSON.stringify(datatransaksi)}} -->
-				<div v-for="p in datatransaksi" style="margin-bottom: 30px">
-				<div class="row">
+				<!-- CEK BARANG SUDAH SAMPAI ? -->
+					<div v-for="p in datatransaksi" style="margin-bottom: 30px">
+				<div v-if="p.data.kurir.terkirim == true">
+				<div class="row q-mt-md">
 					<q-card class="q-pa-md" style="width: 100%;"
 					  v-ripple
 					  @click="showdetail(p)"
@@ -91,14 +103,19 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 							<div class="row ">
 								<div class="text-caption">
 									Jenis Pembayaran :
-									{{p.data.details.card_type}}
+									{{p.data.details.payment_type}}
 
 									 {{p.data.details.bank}}
 								</div>
 							</div>
 							<div class="row justify-end">
 								<div class="text-caption text-grey">
-									{{moment().format('ll')}}
+									{{p.data.createdAt}}
+								</div>
+							</div>
+							<div class="row justify-end">
+								<div class="text-caption text-grey">
+									{{p.data.timeAt}}
 								</div>
 							</div>
 
@@ -112,6 +129,7 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 					>Details</q-btn>
 				</div>	
 			  </div>
+				</div>
 			</div>
 
 			<!-- JIKA KOSONG -->
@@ -189,7 +207,7 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 			    style="height: 400px;width: 100%;"
 			    :access-token="token"
 			    map-style="mapbox://styles/mapbox/streets-v11">
-			    <MapboxMarker :lng-lat="[resultdialog.data.positionlongitude, resultdialog.data.positionlatitude]" >
+			    <MapboxMarker :lng-lat="[0,0]" >
 			    	 <template v-slot:popup>
 			        <p>Kurir</p>
 			      </template>

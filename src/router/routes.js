@@ -11,6 +11,7 @@ const routes = [
       { path: '/detailterlaris', component: () => import('pages/DetailProdukterlaris.vue') },
       { path: '/detailcategory/:id', component: () => import('pages/DetailCategory.vue') },
       { path: '/bayarsekarang/:id', component: () => import('pages/Bayarsekarang.vue') },
+      { path: '/dialogdetailtrack/:id', component: () => import('pages/DialogdetailTrack.vue') },
     ]
   },
 
