@@ -112,6 +112,12 @@ try {
 									 		phone:nomorhp.value,
 									 		alamat:alamat.value,
 									 		jumlahpesan:jumlahpesan.value,
+									 		kurir:{
+									 			latitude:0,
+									 			longitude:0,
+									 			status:false,
+									 			terkirim:false
+									 		},
 									 		pesanan:{
 									 			nama_barang:databelanja.value.nama_barang,
 									 			image:databelanja.value.image,
