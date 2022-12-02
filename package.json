@@ -15,10 +15,12 @@
     "@mapbox/mapbox-gl-geocoder": "^5.0.1",
     "@quasar/extras": "^1.0.0",
     "@studiometa/vue-mapbox-gl": "^2.0.1",
+    "@vue-leaflet/vue-leaflet": "^0.6.1",
     "axios": "^0.21.1",
     "firebase": "^9.14.0",
     "firebase-admin": "^11.3.0",
     "hellojs": "^2.0.0-4",
+    "leaflet": "^1.9.3",
     "mapbox-gl": "^2.11.0",
     "maplibre-gl": "^2.4.0",
     "moment": "^2.29.4",
@@ -28,7 +30,8 @@
     "vue": "^3.0.0",
     "vue-maplibre-gl": "^1.0.0-beta.26",
     "vue-router": "^4.0.0",
-    "vue3-google-login": "^2.0.12"
+    "vue3-google-login": "^2.0.12",
+    "vue3-openlayers": "^0.1.71"
   },
   "devDependencies": {
     "@quasar/app-vite": "^1.0.0",
