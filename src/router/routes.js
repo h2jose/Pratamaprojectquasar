@@ -12,6 +12,7 @@ const routes = [
       { path: '/detailcategory/:id', component: () => import('pages/DetailCategory.vue') },
       { path: '/bayarsekarang/:id', component: () => import('pages/Bayarsekarang.vue') },
       { path: '/dialogdetailtrack/:id', component: () => import('pages/DialogdetailTrack.vue') },
+      { path: '/lihatsemuatransaksi/', component: () => import('pages/Lihatsemuatransaksi.vue') },
     ]
   },
 

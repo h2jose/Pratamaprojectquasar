@@ -37,7 +37,9 @@ if(querySnapshot != null){
 					Terbaru hari ini
 				</div>
 			</div>
-				<div v-for="p in harinidata">
+				<!-- JIKA ADA DATA -->
+				<div v-if="harinidata.length > 0">
+					<div v-for="p in harinidata">
 		      	<div class="row justify-center" style="width: 100%;">
 					<router-link
 					style="text-decoration: none;
@@ -97,6 +99,17 @@ if(querySnapshot != null){
 						</div>
 					</q-card>
 					</router-link>
+				</div>
+			</div>
+				</div>
+			<!-- JIKA DATAKOSONG -->
+			<div v-else>
+				<div class="column justify-center">
+					<div class="row justify-center">
+						<div class="text-caption">
+							Belum ada data di sini
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

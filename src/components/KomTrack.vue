@@ -2,6 +2,10 @@
 	import {ref,onMounted} from 'vue'
   import {app} from 'src/firebase/firebase.js'
   import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/firestore'
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+const auth = getAuth(app);
+
   import { useCounterStore } from 'stores/belanja';
   import KomtrackHariIni from 'src/components/KomtrackHariIni.vue'
   import moment from 'moment'
@@ -17,7 +21,6 @@
    let detailbelanja =  ref([])
  	let dialogbelanja = ref(false)
  	let detailitem = ref([])
-   let email = store.dataLogin.email
 
 
 // format IDR
@@ -34,14 +37,14 @@
 function showinformasi(p){
 	dialogbelanja.value = true
 	detailbelanja.value = p
-	detailitem.value = JSON.parse(p.pesanan)
+	detailitem.value = p.pesanan
 }
 
    // GET DATA TRANSAKSI
-	 onMounted(async()=>{
-    	// GET DATA TERLARIS > 
+async function getdatatransaksi(p){
+	   	// GET DATA TERLARIS > 
    const db = getFirestore(app);
-const q = query(collection(db, "transaksi"), where("email", "==", email));
+const q = query(collection(db, "transaksi"), where("email", "==", p));
  	const querySnapshot = await getDocs(q);
  	if(querySnapshot != null){
  		querySnapshot.forEach((doc) => {
@@ -50,6 +53,16 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
   datatransaksi.value.reverse()
 });
  	}
+}
+
+	 onMounted(async()=>{
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+  	getdatatransaksi(user.email)
+  } else {
+  }
+});
+
 })
 </script>
 <template>
@@ -61,11 +74,13 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 				<KomtrackHariIni/>
 			</div>
 
-			<div class="row q-mt-md jus">
+			<div class="row  justify-between q-mt-md jus">
 				<div class="text-body1 text-bold">
 				Barang yg sudah sampai
 			</div>
+			<q-btn flat  color="blue" to="/lihatsemuatransaksi">Lihat semua</q-btn>
 			</div>
+
 				<!-- {{JSON.stringify(datatransaksi)}} -->
 				<!-- CEK BARANG SUDAH SAMPAI ? -->
 					<div v-for="p in datatransaksi" style="margin-bottom: 30px">
@@ -108,7 +123,11 @@ const q = query(collection(db, "transaksi"), where("email", "==", email));
 									 {{p.data.details.bank}}
 								</div>
 							</div>
-							<div class="row justify-end">
+							<div class="row justify-between">
+                <div v-if="p.data.kurir.terkirim == true">
+								<q-chip color="green" text-color="white" icon="schedule">Sudah sampai</q-chip>
+                	
+                </div>
 								<div class="text-caption text-grey">
 									{{p.data.createdAt}}
 								</div>
@@ -248,7 +267,7 @@ maximized
            			Total pesanan : {{detailbelanja.jumlahpesan}}
            		</div>
            		<div class="text-caption">
-           			Hrg peritem : {{parseInt(detailbelanja.harga) / parseInt(detailbelanja.jumlahpesan)}}
+           			Hrg peritem : <b>{{formatter.format(parseInt(detailbelanja.harga) / parseInt(detailbelanja.jumlahpesan))}}</b>
            		</div>
            	</div>
            		<div class="row">
@@ -260,23 +279,42 @@ maximized
            </q-card>
 		</q-card-section>
 		<q-card-section>
-				<q-scroll-area 
-				  class="q-mt-md"
-				  style="height: 280px; max-width:100%">
-				<div class="row no-wrap">
-					<div v-for="x in detailitem">
-			     <q-card >
-                     <div class="column">
-                     	<div class="row">
-                     		 <img :src="x.image" 
-                           style="max-height: 130px"
-                      alt="">
-                     	</div>
-                     </div>
-			     </q-card>
+				<div class="row  justify-center">
+					<q-card>
+						<div class="column">
+							<div class="row">
+								<img :src="detailitem.image" 
+								style="width: 250px;height:150px"
+								alt="">
+							</div>
+							<div class="row justify-center">
+								<div class="text-subtitle2">
+									{{detailitem.nama_barang}}
+								</div>
+							</div>
+							
+						</div>
+					</q-card>
+				</div>
+		</q-card-section>
+		<q-card-section>
+			<div class="column">
+				<div class="row">
+					<div class="text-subtitle1 text-bold">
+						Deskripsi
 					</div>
 				</div>
-			</q-scroll-area>
+				<div class="row">
+					<div class="text-caption">
+						{{detailitem.desc}}
+					</div>
+				</div>
+				<div class="row q-mt-md">
+					<div class="text-subtitle2">
+						 Harga per Item : {{formatter.format(detailitem.harga)}}
+					</div>
+				</div>
+			</div>
 		</q-card-section>
 		<q-card-section
 		class="bg-orange text-white"
