@@ -43,6 +43,11 @@
 								<div class="row justify-center">
 									<div class="text-subtitle2">{{datakurir.pesanan.nama_barang}}</div>
 								</div>
+								<div class="row justify-center">
+										<div class="text-caption">
+										harga : {{formatter.format(datakurir.pesanan.harga)}}
+									</div>
+								</div>
 							</q-card>
 						</div>
 						<div class="row q-pa-md">
@@ -55,12 +60,14 @@
 									</div>
 								</div>
 						</div>
-							<div class="row  justify-between q-mt-md q-pa-sm">
+							<div class="row  q-mt-md q-pa-sm">
+								<div class="text-subtitle2">
+									jumlah pesan : {{datakurir.jumlahpesan}}
+								</div>
+							</div>
+							<div class="row   q-mt-sm q-pa-sm">
 									<div class="text-subtitle2">
 										Total bayar : {{formatter.format(datakurir.harga)}}
-									</div>
-									<div class="text-caption">
-										perItem : {{formatter.format(datakurir.pesanan.harga)}}
 									</div>
 								</div>
 					</div>
@@ -73,12 +80,21 @@
 							</div>
 						</div>
 				</div>
-				
-	 		 <div id="mapContainer" style="height:400px"></div>
-                <!-- MAPS KURIR -->
+			
+			      <!-- MAPS KURIR -->
 				<div v-if="datakurir.kurir != undefined">
-					{{datakurir.kurir.latitude}}
+					<div class="row justify-around">
+						<div class="text-caption">
+					lat : {{datakurir.kurir.latitude}}
+						</div>
+						<div class="text-caption">
+					long : {{datakurir.kurir.longitude}}
+						</div>
+					</div>
 				</div>
+
+	 		 <div id="mapContainer" style="height:400px"></div>
+       
 				
 
 
@@ -131,14 +147,27 @@ onMounted(async()=>{
     	let latitude = datakurir.value.kurir.latitude
     	let longitude = datakurir.value.kurir.longitude
     	if(datakurir.value.kurir != undefined){
-      	// document.getElementById("mainmap").outerHTML = "";
+var container = L.DomUtil.get('mapContainer');
    		mymap = L.map("mapContainer").setView([latitude, longitude], 5);
- marker = L.marker([latitude, longitude]).bindPopup("Kurir ada di sini").openPopup();
- marker.addTo(mymap);
-    L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
+   var osm =  L.tileLayer("http://{s}.tile.osm.org/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-    }).addTo(mymap);
+    });
+ if(container != null){ 
+ 	container._leaflet_id = null; console.log("jalananan")
+   if (marker != undefined) {
+              mymap.removeLayer(marker);
+        };
+    		// mymap.removeL2ayer(marker)
+ // marker = L.marker([latitude, longitude]).bindPopup("Kurir ada di sini").openPopup().addTo(mymap);
+ marker = L.marker(new L.LatLng(latitude, longitude)).bindPopup("Kurir ada di sini").openPopup().addTo(mymap);
+ osm.addTo(mymap)
+    // var newLatLng = new L.LatLng(latitude, longitude);
+    // marker.setLatLng(newLatLng); 
+      	// document.getElementById("mainmap").outerHTML = "";
+ // marker.addTo(mymap);
+ // mymap.addLayer(osm);
+}
     		console.log("Dda" + latitude + longitude)
     	}
 

@@ -6,10 +6,8 @@
 
 const auth = getAuth(app);
 
-  import { useCounterStore } from 'stores/belanja';
   import KomtrackHariIni from 'src/components/KomtrackHariIni.vue'
   import moment from 'moment'
-   const store = useCounterStore();
 
        import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl';
   import 'mapbox-gl/dist/mapbox-gl.css';
@@ -21,7 +19,7 @@ const auth = getAuth(app);
    let detailbelanja =  ref([])
  	let dialogbelanja = ref(false)
  	let detailitem = ref([])
-
+ 	let belumlogin = ref(false)
 
 // format IDR
  const formatter = new Intl.NumberFormat('id-ID', {
@@ -60,6 +58,7 @@ onAuthStateChanged(auth, (user) => {
   if (user) {
   	getdatatransaksi(user.email)
   } else {
+  	belumlogin.value = true
   }
 });
 
@@ -168,7 +167,8 @@ onAuthStateChanged(auth, (user) => {
 			</div>
 		
 			<!-- JIKA BELUM LOGIN -->
-			<div v-if="store.dataLogin == null"
+			<div 
+			v-if="belumlogin == true"
 			style="margin-top:70px"
 			>
 				<div class="column justify-center">

@@ -72,7 +72,7 @@ function onScroll(info){
 
  onMounted(async()=>{
  	// GET DATA TERLARIS > 
-const q = query(collection(db, "data_carousel"), where("dibeli", ">=", 10));
+const q = query(collection(db, "data_carousel"));
  	const querySnapshot = await getDocs(q);
 querySnapshot.forEach((doc) => {
   terlaris.value.push({id:doc.id,data:doc.data()})
@@ -98,10 +98,58 @@ querySnapshot.forEach((doc) => {
 							<q-btn icon="arrow_back" flat
 							@click="$router.go(-1)"
 							></q-btn>
-							<div class="text-h6">Produk Terlaris</div>
+							<div class="text-h6">Lihat Semua Produk</div>
 						</div>
 					</q-toolbar>
-					<div class="q-pa-md" style="margin-bottom: 30px;">
+					<!-- CARD MENU -->
+						<div>
+						<div v-for="p in terlaris">
+					<div class="row q-pa-sm justify-center">
+							<router-link 
+							style="text-decoration: none;color: inherit;"
+							:to="p.data.stok != 0 ? '/bayarsekarang/' + p.id : ''">
+								<q-card v-ripple>
+								<div class="column">
+									<div class="row">
+										<img :src="p.data.image" 
+                    style="width:130px;height:90px"
+										alt="">
+										<div>
+										<div class="row">
+											<div class="text-subtitle2 q-ml-md q-mr-md">
+											{{p.data.nama_barang}}
+										</div>
+										</div>
+										<div class="text-subtitle2 text-orange text-bold q-ml-md">
+											{{toRupiah(p.data.harga)}}
+										</div>
+										<div class="text-caption q-ml-md" style="width:80%">
+											{{p.data.desc.substring(0,30) + '...'}}
+										</div>
+										<!-- BAWAH -->
+										<div class="row justify-between">
+											<div class="text-caption q-ml-md">
+											{{p.data.dibeli}} x dibeli
+										</div>
+                     <div v-if="p.data.stok == 0">
+                     	<q-chip color="red" text-color="white" icon="close">Habis</q-chip>
+                     </div>
+                     <div v-if="p.data.stok !== 0">
+                     	<q-chip color="green" text-color="white">
+                     		{{p.data.stok}} tersedia
+                     	</q-chip>
+                     </div>
+										</div>
+										</div>
+									</div>
+								</div>
+							</q-card>
+							</router-link>
+					</div>
+					</div>
+						</div>
+
+				<!-- 	<div class="q-pa-md" style="margin-bottom: 30px;">
 						<div v-for="p in terlaris">
 						<q-card class="q-ma-md">
 						<div class="column">
@@ -119,11 +167,11 @@ querySnapshot.forEach((doc) => {
 						<div style="width:60%">
 							<div class="text-caption">{{p.data.desc}}</div>
 						</div>
-						<div style="width:20%">
+						<div style="width:20%"> -->
 							<!-- <div class="text-subtitle2">{{toRupiah(p.data.harga)}}</div> -->
-						</div>
-					</div>
-					<div class="row q-pa-md justify-between">
+						<!-- </div> -->
+					<!-- </div> -->
+				<!-- 	<div class="row q-pa-md justify-between">
 						<q-rating v-model="p.data.ratting"
 						icon="thumb_up"
 						color="orange"
@@ -153,7 +201,7 @@ querySnapshot.forEach((doc) => {
 					</div>
 					</q-card>
 				</div>
-					</div>
+					</div> -->
 			</div>
 			<!-- JIKA SALAH -->
 			<div v-else >
@@ -164,22 +212,12 @@ querySnapshot.forEach((doc) => {
 						<q-btn icon="arrow_back" flat
 						@click="$router.go(-1)"
 						></q-btn>
-						<div class="text-h6">Produk Terlaris</div>
+						<div class="text-h6">Lihat Semua Produk</div>
 					</div>
 				</q-toolbar>
 				</div>
-				<div class="row ">
-					<q-skeleton width="100%" height="220px"></q-skeleton>
-				</div>
-				<div class="row q-pa-md">
-					<q-skeleton width="70%" height="40px"></q-skeleton>
-				</div>
-				<div class="row q-pa-md justify-around">
-					<q-skeleton width="70%" height="190px"></q-skeleton>
-					<q-skeleton width="20%" height="30px"></q-skeleton>
-				</div>
-				<div class="row q-pa-md justify-center">
-					<q-skeleton width="100%" height="40px"></q-skeleton>
+				<div class="row justify-center q-mt-md">
+					<q-spinner size="50px"></q-spinner>
 				</div>
 
 				</div>
@@ -197,7 +235,7 @@ querySnapshot.forEach((doc) => {
 						<q-btn icon="arrow_back" flat
 						@click="$router.go(-1)"
 						></q-btn>
-						<div class="text-h6">Produk Terlaris</div>
+						<div class="text-h6">Semua Produk</div>
 					</div>
 
 				</q-toolbar>

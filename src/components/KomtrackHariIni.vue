@@ -1,6 +1,9 @@
 <script setup>
 	import {ref,onMounted} from 'vue'
   import { getFirestore,collection,query,where,doc, orderBy,getDocs } from 'firebase/firestore'
+   import { getAuth, onAuthStateChanged } from "firebase/auth";
+const auth = getAuth(app);
+
   import {app} from 'src/firebase/firebase.js'
   import { useCounterStore } from 'stores/belanja';
    const store = useCounterStore();
@@ -9,12 +12,12 @@
    let harini = ref(moment().format('LL'))
    let harinidata =  ref([])
 
-   let email = store.dataLogin.email 
 
-onMounted(async()=>{
 
-const citiesRef = collection(db, "transaksi");
-const q = query(citiesRef,where("email", "==", email), where("createdAt", "==", harini.value));
+// FUNCTION GET HARI INI
+ async function gethariini(p){
+ 	const citiesRef = collection(db, "transaksi");
+const q = query(citiesRef,where("email", "==", p), where("createdAt", "==", harini.value));
  	const querySnapshot = await getDocs(q);
 
 if(querySnapshot != null){
@@ -22,6 +25,17 @@ if(querySnapshot != null){
 		harinidata.value.push({id:doc.id,data:doc.data()})
 });
 }
+ }
+onMounted(()=>{
+	onAuthStateChanged(auth, (user) => {
+  if (user) {
+  	gethariini(user.email)
+  } else {
+  }
+});
+
+gethariini()
+
 })
 // format IDR
  const formatter = new Intl.NumberFormat('id-ID', {

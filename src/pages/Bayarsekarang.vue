@@ -183,15 +183,13 @@ try {
 </script>
 <template>
 	<q-page>
-		<div class="column bg-pink text-white q-pa-md shadow-10">
-			<div class="row">
+			<q-toolbar class="bg-pink text-white shadow-4">
 				<q-btn flat icon="arrow_back"
 				@click="$router.go(-1)"
 				round
 				></q-btn>
-				<div class="text-h6" style="margin-top: 10px;">Bayar sekarang</div>
-			</div>
-		</div>
+				<div class="text-h6" >Bayar sekarang</div>
+			</q-toolbar>
 			<!-- BELUM LOGIN -->
 		<div v-if="store.dataLogin === null">
 			<div class="column q-pa-md">

@@ -86,9 +86,14 @@ onAuthStateChanged(auth, (user) => {
 									Total harga : {{formatter.format(p.data.harga)}}
 								</div>
 								<div class="text-caption">
-									<q-chip>
+									<q-chip  text-color="white" :color="p.data.kurir.terkirim == true ? 'green':'orange'">
 										{{p.data.kurir.terkirim == false ? 'blm sampai' : 'sudah sampai'}}
 									</q-chip>
+								</div>
+							</div>
+							<div class="row justify-end">
+								<div class="text-caption text-grey">
+									{{p.data.createdAt}}
 								</div>
 							</div>
 						</div>
