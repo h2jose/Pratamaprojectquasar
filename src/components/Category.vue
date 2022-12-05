@@ -1,8 +1,16 @@
 <script setup>
-	import {ref,computed} from 'vue'
-	  import { useCounterStore } from 'stores/belanja';
-   const store = useCounterStore();
-  const alldata = computed(() => store.getdataFirebase);
+	import {ref,onMounted} from 'vue'
+  import {app} from 'src/firebase/firebase.js'
+  import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/firestore'
+   const db = getFirestore(app);
+   let alldata = ref([])
+ import toRupiah from '@develoka/angka-rupiah-js';
+ onMounted(async()=>{
+const querySnapshot = await getDocs(collection(db, "data_carousel"));
+querySnapshot.forEach((doc) => {
+	alldata.value.push({id:doc.id,data:doc.data()})
+});
+ })
 </script>
 <template>
 	<div>

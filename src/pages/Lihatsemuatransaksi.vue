@@ -6,7 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 	import moment from 'moment'
 	moment.locale("id")
   import {app} from 'src/firebase/firebase.js'
- import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/firestore'
+ import { getFirestore,collection,query,where,doc, orderBy,getDocs } from 'firebase/firestore'
 const auth = getAuth(app);
 // format IDR
  const formatter = new Intl.NumberFormat('id-ID', {
@@ -23,7 +23,7 @@ const q = query(collection(db, "transaksi"), where("email", "==", p));
  		querySnapshot.forEach((doc) => {
 	// console.log(doc.data())
   datatransaksi.value.push({id:doc.id,data:doc.data()})
-  datatransaksi.value.reverse()
+  // datatransaksi.value.reverse()
 });
  	}
 }

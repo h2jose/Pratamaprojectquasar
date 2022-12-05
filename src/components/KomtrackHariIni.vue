@@ -89,14 +89,11 @@ gethariini()
 
 								</div>
 							</div>
-							<div class="row justify-center" >
-								<div class="text-caption bg-blue text-white text-bold q-pa-sm">
-								{{p.data.kurir.status == true ? "Kurir sedang dalam perjalanan":"tidak ada kurir yang mengirim"}}
-								</div>
-							</div>
-							
 							<div class="row">
-								<div class="text-caption">
+								<div class="text-caption text-bold"
+								:style="{color:p.data.kurir.terkirim == false ? 'red':'green'}"
+
+								>
 									status : {{p.data.kurir.terkirim == false  ? "barang belum terkirim":"barang sudah sampai"}}
 								</div>
 							</div>

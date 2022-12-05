@@ -36,15 +36,6 @@ function checkuser(){
       import { getFirestore,collection, doc, getDocs } from 'firebase/firestore'
    const db = getFirestore(app);
  onMounted(async()=>{
-    const colRef = collection(db, "data_carousel");
-    const docsSnap = await getDocs(colRef);
-    if(docsSnap !== undefined){
-      docsSnap.forEach((doc)=>{
-        store.getalldataFirebase(doc)
-      })
-    }
-     
-  
     // GET PROMO
     const promoref = collection(db, "promo");
     const promo = await getDocs(promoref);

@@ -3,14 +3,12 @@ import { defineStore } from 'pinia';
 export const useCounterStore = defineStore('counter', {
   state: () => ({
     counter: 0,
-    dataFirebase:[],
     dataPromo:[],
     keranjang:[],
     dataLogin:[]
   }),
   getters: {
     doubleCount: (state) => state.counter * 2,
-    getdataFirebase:(state)=> state.dataFirebase.reverse(),
     getdataPromo:(state)=> state.dataPromo.reverse(),
     getkeranjang:(state)=> state.keranjang.reverse(),
     getdatalogin:(state)=> state.dataLogin,
@@ -26,9 +24,7 @@ export const useCounterStore = defineStore('counter', {
     userLogouthapus(){
       this.dataLogin = null
     },
-    getalldataFirebase(doc){
-      this.dataFirebase.push({id:doc.id,data:doc.data()})
-    },
+    
       getallPromoData(doc){
       // console.log("tolol")
       // console.log(doc)
@@ -40,9 +36,7 @@ export const useCounterStore = defineStore('counter', {
       console.log(p)
       // localstorage.setItem
     },
-    hapusdatafirebase(){
-      this.dataFirebase = null
-    },
+  
     logoutlogin(){
       this.dataLogin = ""
       console.log(this.dataLogin)

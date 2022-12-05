@@ -32,7 +32,7 @@ async function pencarianbarang(){
 		pencarianid.value = doc.id
 	}
 	if(doc.data().nama_barang != carisesuatu.value){
-		alert("kosong")
+		alert("barang tidak di temukan222")
 	}
 
 });

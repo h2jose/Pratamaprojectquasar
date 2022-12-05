@@ -3,15 +3,15 @@
 	import Kamubelumlogin from 'src/components/Kamubelumlogin.vue'
   import { useCounterStore } from 'stores/belanja';
   import {app} from 'src/firebase/firebase.js'
-  import { getFirestore, collection,doc,setDoc, getDoc,addDoc } from 'firebase/firestore'
+  import { getFirestore, collection,doc,setDoc, onSnapshot,getDoc,addDoc } from 'firebase/firestore'
   import {useRoute} from 'vue-router'
   import { Dialog } from 'quasar'
   import { useQuasar } from 'quasar'
   import moment from 'moment'
     const $q = useQuasar()
-// GELOCATION TRACK PEMBELI
-  // import { Geolocation } from '@capacitor/geolocation';
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
 
+const auth = getAuth();
 
 
 	const router = useRoute()
@@ -42,8 +42,22 @@
 
  // GET DATA BY ID FROM PRODUK TERLARIS DETAIL
   onMounted(async()=>{
+// CEK REALTIME STOK
+  	const unsub = onSnapshot(doc(db, "data_carousel", param), (doc) => {
+    console.log("Current data: ", doc.data());
+    if(doc.data().stok == 0 ){
+    	dialogbarangkosong.value = true
+    }
+});
 const docRef = doc(db, "data_carousel", param);
 try {
+	  	// GET EMAIL
+  onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    emailanda.value = user.email
+  } 
+});
     const docSnap = await getDoc(docRef);
     databelanja.value = docSnap.data()
     if(databelanja.value.stok == "0"){
@@ -113,8 +127,8 @@ try {
 									 		alamat:alamat.value,
 									 		jumlahpesan:jumlahpesan.value,
 									 		kurir:{
-									 			latitude:0,
-									 			longitude:0,
+									 			latitude:-6.289204558110223,
+									 			longitude: 107.1531512329212,
 									 			status:false,
 									 			terkirim:false
 									 		},
@@ -310,12 +324,9 @@ try {
 				<q-card-section style="margin-top: 10px;">
 					<div class="column">
 						<div class="row q-pa-md">
-					<q-input rounded outlined 
-					required
-					type="email"
-						v-model="emailanda" label="email"
-            style="width:100%"
-					 />
+					<div class="text-subtitle2">
+						email : {{emailanda}}
+					</div>
 						</div>
 						<div class="row q-pa-md">
 					<q-input rounded outlined

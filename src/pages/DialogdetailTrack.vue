@@ -91,6 +91,13 @@
 					long : {{datakurir.kurir.longitude}}
 						</div>
 					</div>
+					<div class="row justify-center">
+						<div class="text-subtitle2"
+						:style="{color:datakurir.kurir.status == true ? 'green':'red'}"
+						>
+							{{datakurir.kurir.status == true ? "Kurir sedang mengirim ..." : "Belum ada kurir yang mengirim"}}
+						</div>
+					</div>
 				</div>
 
 	 		 <div id="mapContainer" style="height:400px"></div>
@@ -107,6 +114,7 @@
 
 	import {ref, onMounted} from 'vue'
   import { getFirestore,onSnapshot,collection,query,where,doc, orderBy,getDoc } from 'firebase/firestore'
+  import Markericon from 'src/assets/lokasimarker.png'
   var mymap ;
 	 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -118,6 +126,18 @@ import L from "leaflet";
    let datakurir = ref({})
   	let marker;
      
+    // DEFINE ICON MARKER
+ var greenIcon = L.icon({
+    iconUrl: Markericon,
+    shadowUrl: Markericon,
+
+    iconSize:     [38, 95], // size of the icon
+    shadowSize:   [5, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+    shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+});
+
    // let YOUR_LAT  = ref(datakurir.kurir.latitude)
    // let YOUR_LONG  = ref(datakurir.kurir.longitude)
 // // MAPBOX
@@ -137,9 +157,7 @@ import L from "leaflet";
 
 onMounted(async()=>{
 	
- 	
-
-	// REALTIME MAPBOX DARI FIRESTORE
+ 		// REALTIME MAPBOX DARI FIRESTORE
     const unsub = onSnapshot(doc(db, "transaksi", myid.value), (doc) => {
     console.log("Current data: ", doc.data());
     datakurir.value = doc.data()
@@ -160,7 +178,7 @@ var container = L.DomUtil.get('mapContainer');
         };
     		// mymap.removeL2ayer(marker)
  // marker = L.marker([latitude, longitude]).bindPopup("Kurir ada di sini").openPopup().addTo(mymap);
- marker = L.marker(new L.LatLng(latitude, longitude)).bindPopup("Kurir ada di sini").openPopup().addTo(mymap);
+ marker = L.marker(new L.LatLng(latitude, longitude), {icon: greenIcon}).bindPopup("Kurir ada di sini").openPopup().addTo(mymap);
  osm.addTo(mymap)
     // var newLatLng = new L.LatLng(latitude, longitude);
     // marker.setLatLng(newLatLng); 

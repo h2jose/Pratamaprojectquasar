@@ -1,9 +1,18 @@
 <script setup>
-	import {ref,computed} from 'vue'
-	  import { useCounterStore } from 'stores/belanja';
-   const store = useCounterStore();
- const getalldata = computed(() => store.getdataFirebase);
+	import {ref,onMounted} from 'vue'
+  import {app} from 'src/firebase/firebase.js'
+  import { getFirestore,collection,query,where,doc, limit,getDocs } from 'firebase/firestore'
+   const db = getFirestore(app);
+   let getalldata = ref([])
  import toRupiah from '@develoka/angka-rupiah-js';
+ onMounted(async()=>{
+ 	const q = query(collection(db, "data_carousel"), where("dibeli", ">", 10));
+
+const querySnapshot = await getDocs(q);
+querySnapshot.forEach((doc) => {
+	getalldata.value.push({id:doc.id,data:doc.data()})
+});
+ })
 </script>
 <template>
 	<div>
@@ -19,17 +28,17 @@
 		    	 <div class="row q-pa-md no-wrap " >
 		    <div v-for="p in getalldata">
 		     	<router-link
-		     	:to="p.data.stok != 0 ? '/bayarsekarang/' + p.id : ''"
+		     	:to="p.data.stok != 0 ? '/bayarsekarang/' + p.id :''"
 		     	style="text-decoration: none;color: inherit;"
 		     	>
 		     		<q-card style="border-radius: 30px;
-		     	max-width: 150px;
+		     	width: 150px;
 		     	" class="q-ml-md">
 		     		<div class="column">
 		     			<div class="row">
 		     				<img :src="p.data.image" 
-		     			style="max-height:100px;
-		     			max-width: 180px;
+		     			style="height:100px;
+		     			width: 100%;
 		     			border-top-left-radius: 30px;
 		     			border-top-right-radius: 30px;
 		     			background-size: cover;"

@@ -1,69 +1,4 @@
-<script setup>
-	import {ref,onMounted} from 'vue'
-  import {app} from 'src/firebase/firebase.js'
-  import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/firestore'
-  import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const auth = getAuth(app);
-
-  import KomtrackHariIni from 'src/components/KomtrackHariIni.vue'
-  import moment from 'moment'
-
-       import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl';
-  import 'mapbox-gl/dist/mapbox-gl.css';
-    let token = "pk.eyJ1IjoiYm9id2F0Y2hlcngiLCJhIjoiY2xiMGwwZThrMWg3aTNwcW1mOGRucHh6bSJ9.kNHlmRqkRSxYNeipcKkJhw"
-
-   let datatransaksi = ref([])
-   let dialogdetails = ref(false)
-   let resultdialog = ref([])
-   let detailbelanja =  ref([])
- 	let dialogbelanja = ref(false)
- 	let detailitem = ref([])
- 	let belumlogin = ref(false)
-
-// format IDR
- const formatter = new Intl.NumberFormat('id-ID', {
-  style: 'currency',
-  currency: 'IDR',
-})
-// SHOW DETAIL track kurir
-   function showdetail(p){
-   	dialogdetails.value = true
-   	resultdialog.value = p
-   }
-// show info belanja
-function showinformasi(p){
-	dialogbelanja.value = true
-	detailbelanja.value = p
-	detailitem.value = p.pesanan
-}
-
-   // GET DATA TRANSAKSI
-async function getdatatransaksi(p){
-	   	// GET DATA TERLARIS > 
-   const db = getFirestore(app);
-const q = query(collection(db, "transaksi"), where("email", "==", p));
- 	const querySnapshot = await getDocs(q);
- 	if(querySnapshot != null){
- 		querySnapshot.forEach((doc) => {
-	// console.log(doc.data())
-  datatransaksi.value.push({id:doc.id,data:doc.data()})
-  datatransaksi.value.reverse()
-});
- 	}
-}
-
-	 onMounted(async()=>{
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-  	getdatatransaksi(user.email)
-  } else {
-  	belumlogin.value = true
-  }
-});
-
-})
-</script>
 <template>
 	<div>
 			<!-- JIKA ADA DATA -->
@@ -87,11 +22,12 @@ onAuthStateChanged(auth, (user) => {
 				<div class="row q-mt-md">
 					<q-card class="q-pa-md" style="width: 100%;"
 					  v-ripple
-					  @click="showdetail(p)"
+					@click="showinformasi(p.data)"
+					  
 					>
 						<div class="column">
 							<div class="row">
-								<div class="text-h6">{{p.data.email}}</div>
+								<div class="text-caption text-bold">{{p.data.email}}</div>
 							</div>
 							<div class="row bg-orange text-white">
 								<div class="text-subtitle2">{{p.data.details.order_id}}</div>
@@ -140,12 +76,6 @@ onAuthStateChanged(auth, (user) => {
 						</div>
 					</q-card>
 				</div>	
-				<div class="row bg-primary justify-end text-white">
-					<q-btn
-					flat 
-					@click="showinformasi(p.data)"
-					>Details</q-btn>
-				</div>	
 			  </div>
 				</div>
 			</div>
@@ -185,7 +115,24 @@ onAuthStateChanged(auth, (user) => {
 				</div>
 			</div>
 
-			<div v-if="datatransaksi.length <= 0 ">
+			<!-- BELUM ADA PESANAN -->
+			<div v-if="belumadapesanan == true">
+				<div class="column">
+					<div class="row justify-center">
+	<img src="~assets/emptytrack.gif"
+               style="width: 180px;height: 140px;"
+							 alt="">
+					</div>
+					<div class="row justify-center">
+						<div class="text-subtitle2">
+							Kamu Belum memiliki transaksi
+						</div>
+						
+					</div>
+				</div>
+			</div>
+			<!-- laoding -->
+			<div v-if="datatransaksi.length <= 0  && belumadapesanan == false">
 				<div class="column">
 					<div class="row justify-center">
 						<q-spinner size="80px">
@@ -200,42 +147,7 @@ onAuthStateChanged(auth, (user) => {
 		</div>
 	</div>
 
-	<!-- dialog details -->
-	<q-dialog v-model="dialogdetails" maximized
-	   transition-show="slide-up"
-      transition-hide="slide-down"
-	>
-		<q-card>
-			<q-card-section class="bg-primary text-white">
-				<div class="row justify-between">
-					<div class="text-h6">Detail Penjualan</div>
-					<q-btn round icon="close" size="14px"
-					@click="dialogdetails=false"
-					></q-btn>
-				</div>
-			</q-card-section>
-			<q-card-section style="margin:0px;padding:0px">
-				<div style="position: absolute;top:20px;right: 0px;">
-                  <q-btn color="orange">loo 
-                  
-                  </q-btn>
-				</div>
 
-			<!-- FRAME MAPS -->
-			 <MapboxMap
-			    style="height: 400px;width: 100%;"
-			    :access-token="token"
-			    map-style="mapbox://styles/mapbox/streets-v11">
-			    <MapboxMarker :lng-lat="[0,0]" >
-			    	 <template v-slot:popup>
-			        <p>Kurir</p>
-			      </template>
-			    </MapboxMarker>
-			  </MapboxMap>
-
-			</q-card-section>
-		</q-card>
-	</q-dialog>
 <!-- dialog belanja -->
 <q-dialog v-model="dialogbelanja"
 transition-show="slide-up"
@@ -331,3 +243,74 @@ maximized
 	</q-card>
 </q-dialog>
 </template>
+<script setup>
+	import {ref,onMounted} from 'vue'
+  import {app} from 'src/firebase/firebase.js'
+  import { getFirestore,collection,query,where,doc, getDocs } from 'firebase/firestore'
+  import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+
+const auth = getAuth(app);
+
+  import KomtrackHariIni from 'src/components/KomtrackHariIni.vue'
+  import moment from 'moment'
+
+       import { MapboxMap, MapboxMarker } from '@studiometa/vue-mapbox-gl';
+  import 'mapbox-gl/dist/mapbox-gl.css';
+    let token = "pk.eyJ1IjoiYm9id2F0Y2hlcngiLCJhIjoiY2xiMGwwZThrMWg3aTNwcW1mOGRucHh6bSJ9.kNHlmRqkRSxYNeipcKkJhw"
+
+   let datatransaksi = ref([])
+   let detailbelanja =  ref([])
+ 	let dialogbelanja = ref(false)
+ 	let detailitem = ref([])
+ 	let belumlogin = ref(false)
+ 	let belumadapesanan = ref(false)
+
+ 	let latitude = ref(-6.12312)
+ 	let longitude = ref(107.231231)
+// format IDR
+ const formatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+})
+
+// show info belanja
+function showinformasi(p){
+	dialogbelanja.value = true
+	detailbelanja.value = p
+	detailitem.value = p.pesanan
+}
+
+   // GET DATA TRANSAKSI
+async function getdatatransaksi(p){
+	   	// GET DATA TERLARIS > 
+   const db = getFirestore(app);
+const q = query(collection(db, "transaksi"), where("email", "==", p));
+ 	const querySnapshot = await getDocs(q);
+ 	if(querySnapshot.empty){
+ 	belumadapesanan.value = true
+ 		
+ 	}
+ 	if(querySnapshot != null){
+ 		querySnapshot.forEach((doc) => {
+	// console.log(doc.data())
+ 			
+  datatransaksi.value.push({id:doc.id,data:doc.data()})
+  datatransaksi.value.reverse()
+});
+ 	}
+}
+
+	 onMounted(async()=>{
+
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+  	getdatatransaksi(user.email)
+  } else {
+  	belumlogin.value = true
+  }
+});
+
+})
+</script>
